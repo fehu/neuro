@@ -8,7 +8,7 @@ import feh.tec.neuro.dsl._
  *  hidden: 1 layer with 5 neurons
  */
 
-object NN1{
+object NN1 extends App{
   val nNetwork = Neuro define new Network{
     Layer(0, neurons = 4)(
       connect(
@@ -42,4 +42,6 @@ object NN1{
     def outputs = 2~(1, 2)
 
   }
+
+  println(nNetwork)
 }

@@ -1,6 +1,7 @@
 package feh.tec.neuro
 
-import Named.Create
+import feh.util._
+import Named._
 
 /** Abstract artificial neuron */
 sealed trait Neuron {
