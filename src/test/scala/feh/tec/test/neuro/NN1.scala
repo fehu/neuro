@@ -36,6 +36,8 @@ object NN1{
       )
     )
 
+    Layer(3, neurons = 0)(NoConnections)
+
     def inputs = 0~3 and 0~4
     def outputs = 2~(1, 2)
 

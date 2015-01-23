@@ -1,6 +1,11 @@
-organization := "feh.tec"
+organization  := "feh.tec"
 
-name         := "neuro"
+name          := "neuro"
 
-scalaVersion := "2.11.5"
+version       := "0.1-SNAPSHOT"
 
+scalaVersion  := "2.11.5"
+
+resolvers += "Fehu's github repo" at "http://fehu.github.io/repo"
+
+libraryDependencies += "feh.util" %% "util" % "1.0.7"

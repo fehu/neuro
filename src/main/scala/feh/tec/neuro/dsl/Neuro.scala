@@ -1,9 +1,11 @@
 package feh.tec.neuro.dsl
 
-import feh.tec.neuro.{NotNegative, NeuronNetwork}
+import feh.tec.neuro.{NetworkDefinition, NotNegative, NeuronNetwork}
+import NetworkDefinition._
+import feh.util.ScopedState
 
 object Neuro {
-  def define[NN <: Network](nn: NN): NN = ???
+  def define(nn: Network): NetworkDefinition = ???
 }
 
 trait Network{
@@ -13,14 +15,21 @@ trait Network{
   def outputs: List[NeuronSelect]
 
 
-  type LayerIdent   = Int
-  type NeuronIdent  = Int
-
   object Layer{
-    def apply(layer: LayerIdent, neurons: NeuronIdent)(connections: (LayerIdent => NeuronConnections)*) = ???
+    def apply(layer: LayerIdent, neurons: NeuronIdent)(connections: => (LayerIdent => NeuronConnections)) = ???
+//      currentLayer.doWith(Some(layer)){
+//
+//      }
+
+//    protected[dsl] val currentLayer = new ScopedState[Option[LayerIdent]](None)
   }
 
-  def connect(c: (LayerIdent => AbstractNeuronConnection)*): LayerIdent => NeuronConnections = ??? //layer => new ConnectNeuron(neuron)
+  def connect(c: (LayerIdent => AbstractNeuronConnection)*): LayerIdent => NeuronConnections =
+    layer => NeuronConnections(c.flatMap(_(layer).toList).toList)
+
+  object NoConnections extends (LayerIdent => NeuronConnections){
+    def apply(v1: LayerIdent) = NeuronConnections(Nil)
+  }
 
   case class AllOfLayer protected[dsl](l: LayerIdent)
   def allOfLayer(layer: LayerIdent) = AllOfLayer(layer)
@@ -34,29 +43,9 @@ trait Network{
   }
 
   implicit class AbstractNeuronConnectionBuildWrapper(c: LayerIdent => AbstractNeuronConnection){
-    def withDelay(delay: NotNegative[Int]): LayerIdent => AbstractNeuronConnection = ???
+    def withDelay(delay: NotNegative[Int]): LayerIdent => AbstractNeuronConnection =
+      layer => c(layer).transform(_.copy(delay = delay))
   }
-
-/*
-  abstract class Layer(val layer: Int,
-                       val neurons: Int = neuronsNotDefined)
-  {
-
-  }
-*/
-
-  case class NeuronSelect protected[dsl](layer: LayerIdent, neuron: NeuronIdent)
-
-  sealed trait AbstractNeuronConnection
-  sealed trait SingleNeuronConnection extends AbstractNeuronConnection{
-    def from: NeuronSelect
-    def to: NeuronSelect
-  }
-
-  case class NeuronConnection protected[dsl](from: NeuronSelect, to: NeuronSelect) extends SingleNeuronConnection
-  case class DelayedNeuronConnection protected[dsl](from: NeuronSelect, to: NeuronSelect, delay: NotNegative[Int]) extends SingleNeuronConnection
-
-  case class NeuronConnections protected[dsl](connections: List[SingleNeuronConnection]) extends AbstractNeuronConnection
   
   implicit class CreateNeuronIdent(layer: LayerIdent){
     def ~(neurons: NeuronIdent*) = neurons.toList map (new NeuronSelect(layer, _))
