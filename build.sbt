@@ -1,11 +1,17 @@
-organization  := "feh.tec"
+lazy val commonSettings = Seq(
+  organization  := "feh.tec",
+  scalaVersion  := "2.11.5",
+  resolvers += "Fehu's github repo" at "http://fehu.github.io/repo"
+)
 
-name          := "neuro"
+publishArtifact := false
 
-version       := "0.1-SNAPSHOT"
+lazy val root = project.in(file("."))
+  .settings(commonSettings: _*)
+  .aggregate(neuro, export)
 
-scalaVersion  := "2.11.5"
+lazy val neuro = project in file("neuro") settings (commonSettings: _*)
 
-resolvers += "Fehu's github repo" at "http://fehu.github.io/repo"
-
-libraryDependencies += "feh.util" %% "util" % "1.0.8-SNAPSHOT"
+lazy val export = project.in(file("export"))
+  .settings(commonSettings: _*)
+  .dependsOn(neuro)

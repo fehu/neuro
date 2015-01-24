@@ -1,7 +1,8 @@
 package feh.tec.neuro.dsl
 
-import feh.tec.neuro.NetworkDefinition
+import feh.tec.neuro.definition.NetworkDefinition
 import NetworkDefinition._
+import feh.tec.neuro.definition.NetworkDefinition
 import feh.util._
 
 import scala.collection.mutable

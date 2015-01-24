@@ -1,6 +1,6 @@
 package feh.tec.neuro
 
-trait NeuronNetwork {
+trait NeuralNetwork {
   /** Number Network of inputs */
   def inputs: Int
 
@@ -19,9 +19,9 @@ trait NeuronNetwork {
   def output(input: Seq[Float]): Seq[Float]
 }
 
-object NeuronNetwork{
+object NeuralNetwork{
   trait FixedNetworkStructure {
-    self: NeuronNetwork =>
+    self: NeuralNetwork =>
 
     val inputs: Int
     val outputs: Int
@@ -39,13 +39,13 @@ object NeuronNetwork{
     assert(neurons.output.size == outputs,  "wrong number of output neurons")
   }
 
-  trait MutableNNetwork extends NeuronNetwork{
+  trait MutableNNetwork extends NeuralNetwork{
     val neurons: Neurons[MutableNeuron]
 
     def fixed: ImmutableNNetwork
   }
 
-  trait ImmutableNNetwork extends NeuronNetwork{
+  trait ImmutableNNetwork extends NeuralNetwork{
     val neurons: Neurons[ImmutableNeuron]
   }
 
