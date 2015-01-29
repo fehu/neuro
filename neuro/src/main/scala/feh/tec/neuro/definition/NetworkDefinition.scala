@@ -7,23 +7,11 @@ object NetworkDefinition{
   type LayerIdent   = Int
   type NeuronIdent  = Int
   
-  type InputIdent   = Int
-  type OutputIdent  = Int
-
-  sealed trait NetworkPoint
-  
-  case class NeuronSelect protected[neuro](layer: LayerIdent, neuron: NeuronIdent) extends NetworkPoint{
+  case class NeuronSelect protected[neuro](layer: LayerIdent, neuron: NeuronIdent) {
     override def toString = s"$layer:$neuron"
     def asPair = layer -> neuron
   }
   
-  case class InputSelect  protected[neuro](ident: InputIdent) extends NetworkPoint{
-    override def toString = s"Input($ident)"
-  }
-  case class OutputSelect protected[neuro](ident: OutputIdent) extends NetworkPoint{
-    override def toString = s"Output($ident)"
-  }
-
   sealed trait AbstractSynapse{
     def transform(f: Synapse => Synapse): AbstractSynapse
     def toList: List[Synapse]
@@ -49,7 +37,9 @@ class NetworkDefinition(val inputs: List[NeuronSelect],
                         val outputs: List[NeuronSelect],
                         val neurons: List[NeuronSelect],
                         val synapses: Synapses){
-  override lazy val toString = s"NetworkDefinition: \n\t$sInputs\n\t$sOutputs\n\t$sNeurons\n\t$sSynapses"
+  def this(nd: NetworkDefinition) = this(nd.inputs, nd.outputs, nd.neurons, nd.synapses)
+
+  override def toString = s"NetworkDefinition: \n\t$sInputs\n\t$sOutputs\n\t$sNeurons\n\t$sSynapses"
 
   private def sInputs    = s"inputs: ${inputs.mkString(", ")}"
   private def sOutputs   = s"outputs: ${outputs.mkString(", ")}"
